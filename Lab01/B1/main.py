@@ -1,5 +1,6 @@
 import csv
 import sys
+from CountryOb import *
 
 # valid command: preprocess --input {inputFilePath} --output {outputFileCSVPath}
 argvList = sys.argv
