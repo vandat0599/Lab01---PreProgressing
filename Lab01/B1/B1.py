@@ -1,6 +1,6 @@
 import csv
 import sys
-
+# this is a new commnent
 x = open("./data/credit.csv", encoding='utf-8-sig')
 countries = []
 data = list(x)
