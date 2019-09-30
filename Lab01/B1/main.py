@@ -1,6 +1,7 @@
 import csv
 import sys
-# i've removed import CountryOb in a line under.
+from CountryOb import *
+# first time use source tree to work with GIT.AMAZING~!!
 
 # valid command: preprocess --input {inputFilePath} --output {outputFileCSVPath}
 argvList = sys.argv
