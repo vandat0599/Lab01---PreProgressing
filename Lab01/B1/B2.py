@@ -1,6 +1,5 @@
 import csv
 import sys
-from CountryOb import *
 
 # valid command: preprocess --input {inputFilePath} --output {outputFileCSVPath}
 argvList = sys.argv
@@ -13,11 +12,11 @@ if "--input" in argvList and "--output" in argvList and "preprocess" in argvList
     try:
         while True:
             country = {}
-            lineSplit = line.rstrip('\n').split("=")
+            lineSplit = line.lstrip().rstrip().split("=")
             country.update({lineSplit[0]: lineSplit[1]})
             line = next(it)
             while "country" not in line:
-                lineSplit = line.rstrip('\n').split("=")
+                lineSplit = line.lstrip().rstrip().split("=")
                 country.update({lineSplit[0]: lineSplit[1]})
                 line = next(it)
             # remove empty data "country,name,longName,foundingDate,population,capital,largestCity,area"
@@ -38,7 +37,7 @@ if "--input" in argvList and "--output" in argvList and "preprocess" in argvList
                     countries.append(country)
 
     except:
-        print("Read data done!!!")
+        print("Read data 1 done!!!")
 
     try:
         with open(argvList[5], 'w') as csvfile:
