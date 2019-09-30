@@ -1,6 +1,6 @@
 import csv
 import sys
-from CountryOb import *
+# i've removed import CountryOb in a line under.
 
 # valid command: preprocess --input {inputFilePath} --output {outputFileCSVPath}
 argvList = sys.argv
