@@ -1,7 +1,7 @@
 import csv
 import sys
 
-x = open("cancers.csv", encoding='utf-8-sig')
+x = open("./data/credit.csv", encoding='utf-8-sig')
 countries = []
 data = list(x)
 listAttr = data[0].lstrip().rstrip().split(",")
