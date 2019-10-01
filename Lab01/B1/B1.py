@@ -51,6 +51,32 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
             else:
                 print(f'Attribute {attrList[i]} is not exist.')
 
+    def partitionEqualWidth(list):
+        for i in range(0, len(list)):
+            if list[i] in listAttr:
+                attr = list[i]
+                listData = []
+                n = 5
+                for i in range(0, len(dataDict)):
+                    value = dataDict[i].get(attr)
+                    if value:
+                        listData.append(int(value))
+                Min = min(listData)
+                Max = max(listData)
+                bins = []
+                width = (Max-Min) / n
+                for i in range(0, n + 1):
+                    bins = bins + [int(Min + width * i)]
+                for i in range(0, len(dataDict)):
+                    if dataDict[i].get(attr):
+                        value = float(dataDict[i].get(attr))
+                        for j in range(0, n):
+                            if bins[j] <= value <= bins[j+1]:
+                                dataDict[i][attr] = '[' + \
+                                    str(bins[j])+','+str(bins[j+1])+']'
+            else:
+                print(f'Attribute {list[i]} is not exist.')
+
     # e f
 
     def getMeanOfAttr(attr):
@@ -131,14 +157,18 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
     switcher = {
         "removeMissingInstance": removeMissingInstance,
         "insertMissingInstance": insertMissingInstance,
-        "minMax": minMaxNormalization
+        "minMax": minMaxNormalization,
+        "partitionEqualWidth": partitionEqualWidth
     }
     task = argvList[7]
     executeFunc = switcher.get(task)
     if executeFunc is None:
         print(task, "-> Not found")
     else:
-        executeFunc(list(argvList[9:len(argvList)]))
+        le = argvList[9:len(argvList)]  # songjongki
+        if len(le) == 1:
+            le[0] = le[0].rstrip("}").lstrip("{")
+        executeFunc(list(le))
     try:
         with open(argvList[5], 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=listAttr)
