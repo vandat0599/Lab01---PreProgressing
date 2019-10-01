@@ -1,0 +1,4 @@
+a) preprocess --original.csv --output processed.csv --minmax--attribute
+
+c) preprocess --original.csv --output processed.csv --equalwidth--attribute
+
