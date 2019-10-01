@@ -18,6 +18,37 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
         dataDict.append(item)
 
     # print(dataDict)
+
+# a
+
+# function return a normalized value
+
+    def normalizeValue(min, max, value):
+        return (value-min)/(max-min)
+
+    # Task a:
+
+    def minMaxNormalization(list):
+        for i in range(0, len(list)):
+            print(listAttr)
+            if list[i] in listAttr:
+                attr = list[i]
+                listData = []
+                Min = Max = 0
+                for i in range(0, len(dataDict)):
+                    value = dataDict[i].get(attr)
+                    if value:
+                        listData.append(float(value))
+                listData.sort()
+                Min = listData[0]
+                Max = listData[len(listData)-1]
+                for i in range(0, len(dataDict)):
+                    value = float(dataDict[i].get(attr))
+                    normalizedvalue = normalizeValue(Min, Max, value)
+                    dataDict[i][attr] = normalizedvalue
+            else:
+                print(f'Attribute {list[i]} is not exist.')
+
     # e f
 
     def getMeanOfAttr(attr):
@@ -96,7 +127,8 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
 
     switcher = {
         "removeMissingInstance": removeMissingInstance,
-        "insertMissingInstance": insertMissingInstance
+        "insertMissingInstance": insertMissingInstance,
+        "minMax": minMaxNormalization
     }
     task = argvList[7]
     executeFunc = switcher.get(task)
@@ -112,6 +144,8 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
                 writer.writerow(dataDict[i])
     except IOError:
         print("I/O error")
+
+
 else:
     print(
         """---Command not found
