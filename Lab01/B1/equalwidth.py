@@ -13,46 +13,41 @@ for i in range(1, len(data)):
         item.update({listAttr[j]: lineList[j]})
     dataDict.append(item)
 
-# function return a normalized value
 
-
-def normalizeValue(min, max, value):
-    return (value-min)/(max-min)
-
-# Task a:
-
-
-def minMaxNormalization(*list):
+def partitionEqualWidth(*list):
     for i in range(0, len(list)):
         if list[i] in listAttr:
             attr = list[i]
             listData = []
-            Min = Max = 0
+            n = 5
             for i in range(0, len(dataDict)):
                 value = dataDict[i].get(attr)
                 if value:
-                    listData.append(float(value))
-            listData.sort()
-            Min = listData[0]
-            Max = listData[len(listData)-1]
+                    listData.append(int(value))
+            Min = min(listData)
+            Max = max(listData)
+            bins = []
+            width = (Max-Min) / n
+            for i in range(0, n + 1):
+                bins = bins + [int(Min + width * i)]
             for i in range(0, len(dataDict)):
                 value = float(dataDict[i].get(attr))
-                normalizedvalue = normalizeValue(Min, Max, value)
-                dataDict[i][attr] = normalizedvalue
+                for j in range(0, n):
+                    if bins[j] <= value <= bins[j+1]:
+                        dataDict[i][attr] = '[' + \
+                            str(bins[j])+','+str(bins[j+1])+']'
         else:
             print(f'Attribute {list[i]} is not exist.')
 
 
-minMaxNormalization('temperature', 'humidity')
-
+partitionEqualWidth('temperature', 'humidity')
+print(dataDict)
 
 try:
-    with open("./data/output.csv", 'w') as csvfile:
+    with open("./data/output1.csv", 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=listAttr)
         writer.writeheader()
         for i in range(0, len(dataDict)):
             writer.writerow(dataDict[i])
 except IOError:
     print("I/O error")
-
-print('done')
