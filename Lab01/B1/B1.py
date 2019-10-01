@@ -44,9 +44,10 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
                 Min = listData[0]
                 Max = listData[len(listData)-1]
                 for i in range(0, len(dataDict)):
-                    value = float(dataDict[i].get(attr))
-                    normalizedvalue = normalizeValue(Min, Max, value)
-                    dataDict[i][attr] = normalizedvalue
+                    if dataDict[i].get(attr):
+                        value = float(dataDict[i].get(attr))
+                        normalizedvalue = normalizeValue(Min, Max, value)
+                        dataDict[i][attr] = normalizedvalue
             else:
                 print(f'Attribute {attrList[i]} is not exist.')
 
