@@ -28,11 +28,12 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
 
     # Task a:
 
-    def minMaxNormalization(list):
-        for i in range(0, len(list)):
-            print(listAttr)
-            if list[i] in listAttr:
-                attr = list[i]
+    def minMaxNormalization(attrList):
+        for i in range(0, len(attrList)):
+            print(attrList)
+            # print(list[i])
+            if attrList[i] in listAttr:
+                attr = attrList[i]
                 listData = []
                 Min = Max = 0
                 for i in range(0, len(dataDict)):
@@ -47,7 +48,7 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
                     normalizedvalue = normalizeValue(Min, Max, value)
                     dataDict[i][attr] = normalizedvalue
             else:
-                print(f'Attribute {list[i]} is not exist.')
+                print(f'Attribute {attrList[i]} is not exist.')
 
     # e f
 
@@ -110,6 +111,7 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
     # f
 
     def insertMissingInstance(attrList):
+        print(attrList)
         removeItemCount = 0
         # check exist attr
         for attr in attrList:
