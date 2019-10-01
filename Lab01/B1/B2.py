@@ -1,7 +1,10 @@
 import csv
 import sys
+<<<<<<< HEAD:Lab01/B1/main.py
 from CountryOb import *
 # first time use source tree to work with GIT.AMAZING~!!
+=======
+>>>>>>> 44d99f69d1ca2fe522ad150986bac8068beed06c:Lab01/B1/B2.py
 
 # valid command: preprocess --input {inputFilePath} --output {outputFileCSVPath}
 argvList = sys.argv
@@ -14,11 +17,11 @@ if "--input" in argvList and "--output" in argvList and "preprocess" in argvList
     try:
         while True:
             country = {}
-            lineSplit = line.rstrip('\n').split("=")
+            lineSplit = line.lstrip().rstrip().split("=")
             country.update({lineSplit[0]: lineSplit[1]})
             line = next(it)
             while "country" not in line:
-                lineSplit = line.rstrip('\n').split("=")
+                lineSplit = line.lstrip().rstrip().split("=")
                 country.update({lineSplit[0]: lineSplit[1]})
                 line = next(it)
             # remove empty data "country,name,longName,foundingDate,population,capital,largestCity,area"
@@ -39,7 +42,7 @@ if "--input" in argvList and "--output" in argvList and "preprocess" in argvList
                     countries.append(country)
 
     except:
-        print("Read data done!!!")
+        print("Read data 1 done!!!")
 
     try:
         with open(argvList[5], 'w') as csvfile:
