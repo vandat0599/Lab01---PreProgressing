@@ -1,11 +1,12 @@
 import csv
 import sys
 import operator
+import math
 
 # valid command: preprocess --input {inputFilePath(*.csv)} --output {outputFilePath(*.csv)} --task {taskName} --propList {setOfAttr}
 argvList = sys.argv
 print(argvList)
-if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input" and ".csv" in argvList[3] and "--output" in argvList[4] and ".csv" in argvList[5] and argvList[6] == "--task" and argvList[8] == "--propList":
+if "preprocess" in argvList and "--input" in argvList and "--output" in argvList and "--task" in argvList and "--propList" in argvList:
     x = open(argvList[3], encoding='utf-8-sig')
     data = list(x)
     listAttr = data[0].lstrip().rstrip().split(",")
@@ -51,12 +52,11 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
             else:
                 print(f'Attribute {attrList[i]} is not exist.')
 
-    def partitionEqualWidth(list):
-        for i in range(0, len(list)):
-            if list[i] in listAttr:
-                attr = list[i]
+    def partitionEqualWidth(n, attrList):
+        for i in range(0, len(attrList)):
+            if attrList[i] in listAttr:
+                attr = attrList[i]
                 listData = []
-                n = 5
                 for i in range(0, len(dataDict)):
                     value = dataDict[i].get(attr)
                     if value:
@@ -64,9 +64,10 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
                 Min = min(listData)
                 Max = max(listData)
                 bins = []
-                width = (Max-Min) / n
+                width = math.ceil((Max-Min) / n)
                 for i in range(0, n + 1):
-                    bins = bins + [int(Min + width * i)]
+                    bins = bins + [int((Min + width * i))]
+                print(bins)
                 for i in range(0, len(dataDict)):
                     if dataDict[i].get(attr):
                         value = float(dataDict[i].get(attr))
@@ -75,7 +76,7 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
                                 dataDict[i][attr] = '[' + \
                                     str(bins[j])+','+str(bins[j+1])+']'
             else:
-                print(f'Attribute {list[i]} is not exist.')
+                print(f'Attribute {attrList[i]} is not exist.')
 
     # e f
 
@@ -165,10 +166,17 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
     if executeFunc is None:
         print(task, "-> Not found")
     else:
-        le = argvList[9:len(argvList)]  # songjongki
-        if len(le) == 1:
-            le[0] = le[0].rstrip("}").lstrip("{")
-        executeFunc(list(le))
+        if task == "partitionEqualWidth":
+            le = argvList[11:len(argvList)]  # songjongki
+            if len(le) == 1:
+                le[0] = le[0].rstrip("}").lstrip("{")
+            executeFunc(int(argvList[9]), list(le))
+        else:
+            le = argvList[9:len(argvList)]  # songjongki
+            if len(le) == 1:
+                le[0] = le[0].rstrip("}").lstrip("{")
+            executeFunc(list(le))
+
     try:
         with open(argvList[5], 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=listAttr)
@@ -182,13 +190,14 @@ if len(argvList) > 8 and argvList[1] == "preprocess" and argvList[2] == "--input
 else:
     print(
         """---Command not found
-        ---Valid command: preprocess --input {inputFilePath} --output {outputFilePath} --task {taskName} --propList {setOfAttr}
+        ---Valid command: preprocess --input {inputFilePath} --output {outputFilePath} --task {taskName} {*} --propList {setOfAttr}
         -----inputFilePath: *.csv
         -----outputFilePath: *.csv")
+        -----{*}: support partitionEqualWidth: require "bin {number}"
         -----taskName:
         --------a: minMax
         --------b: zScore
-        --------c: equalWidth
+        --------c: partitionEqualWidth
         --------d: .....
         --------e: removeMissingInstance
         --------f: insertMissingInstance
