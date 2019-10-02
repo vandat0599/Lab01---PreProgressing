@@ -155,18 +155,124 @@ if "preprocess" in argvList and "--input" in argvList and "--output" in argvList
                     removeItemCount += 1
         print("effect:", removeItemCount, "items")
 
+    # Function for B
+    def mean(dictionary, properties):
+        mean = 0
+        for i in range(len(dictionary)):
+            if dictionary[i][properties] != '':
+                mean += int(dictionary[i][properties])
+        return mean/(len(dictionary))
+
+    def standardDeviation(data, properties):
+        m = mean(data, properties)
+        s = 0
+        for i in range(len(data)):
+            if data[i][properties] != '':
+                s += (int(data[i][properties]) - m)**2
+        return math.sqrt(s/(len(data)-1))
+
+    def absoluteDeviation(data, properties):
+        m = mean(data, properties)
+        s = 0
+        for i in range(len(data)):
+            s += abs(int(data[i][properties]) - m)
+        return s/len(data)
+
+    def zScore1(data, properties):
+        for attr in properties:
+            if attr in listAttr:
+                m = mean(data, attr)
+                # absDev = absoluteDeviation(data,properties)
+                stanDev = standardDeviation(data, attr)
+                for i in range(len(data)):
+                    if data[i][attr] != '':
+                        data[i][attr] = str(
+                            (int(data[i][attr]) - m)/stanDev)
+            else:
+                print("'{}' not found".format(attr))
+
+    # function for D
+    def createNumMemBin(listdata, numBin):
+        num = math.ceil(len(listdata)/numBin)
+        residual = len(listdata) - int(len(listdata)/numBin)*numBin
+        numMemBin = []
+        if residual == 0:
+            for i in range(numBin):
+                numMemBin.append(num)
+        else:
+            for i in range(numBin):
+                if residual > 0:
+                    numMemBin.append(num)
+                    residual -= 1
+                else:
+                    numMemBin.append(num - 1)
+        return numMemBin
+
+    def createBin(data, properties, numbin):
+        listdata = []
+        for i in range(len(data)):
+            if data[i][properties] != '':
+                listdata.append(int(data[i][properties]))
+        listdata.sort()
+        numMemBin = createNumMemBin(listdata, numbin)
+        local = len(listdata)-1
+        element = int(listdata[local]) + 1
+        listdata.append(element)
+        binning = []
+        count = 0
+        for i in numMemBin:
+            a = count
+            b = count + i
+            binning.append([listdata[a], listdata[b]])
+            count += i
+        a = numbin-1
+        b = len(listdata)-2
+        binning[a][1] = listdata[b]
+        return binning
+
+    def EqualDepthPartitioning1(data, properties, numbin):
+        for attr in properties:
+            if attr in listAttr:
+                binning = createBin(data, attr, numbin)
+                for i in range(len(data)):
+                    if data[i][attr]:
+                        for j in range(len(binning)):
+                            a = data[i][attr]
+                            if j < (len(binning)-1):
+                                if int(a) >= binning[j][0] and int(a) < binning[j][1]:
+                                    data[i][attr] = "[" + \
+                                        str(binning[j][0]) + "," + \
+                                        str(binning[j][1]) + ")"
+                                    break
+                            elif j == (len(binning) - 1):
+                                if int(a) >= binning[j][0] and int(a) <= binning[j][1]:
+                                    data[i][attr] = "[" + \
+                                        str(binning[j][0]) + "," + \
+                                        str(binning[j][1]) + "]"
+                                    break
+            else:
+                print("'{}' not found".format(attr))
+
+    def zScore(attr):
+        zScore1(dataDict, attr)
+
+    def EqualDepthPartitioning(numbin, properties):
+        EqualDepthPartitioning1(dataDict, properties, numbin)
+
     switcher = {
         "removeMissingInstance": removeMissingInstance,
         "insertMissingInstance": insertMissingInstance,
         "minMax": minMaxNormalization,
-        "partitionEqualWidth": partitionEqualWidth
+        "zScore": zScore,
+        "partitionEqualWidth": partitionEqualWidth,
+        "partitionEqualDepth": EqualDepthPartitioning
     }
     task = argvList[7]
     executeFunc = switcher.get(task)
     if executeFunc is None:
         print(task, "-> Not found")
     else:
-        if task == "partitionEqualWidth":
+        if task == "partitionEqualWidth" or task == "partitionEqualDepth":
             le = argvList[11:len(argvList)]  # songjongki
             if len(le) == 1:
                 le[0] = le[0].rstrip("}").lstrip("{")
@@ -193,12 +299,12 @@ else:
         ---Valid command: preprocess --input {inputFilePath} --output {outputFilePath} --task {taskName} {*} --propList {setOfAttr}
         -----inputFilePath: *.csv
         -----outputFilePath: *.csv")
-        -----{*}: support partitionEqualWidth: require "bin {number}"
+        -----{*}(optional): support partitionEqualWidth and partitionEqualDepth: require "--bin {number}"
         -----taskName:
         --------a: minMax
         --------b: zScore
         --------c: partitionEqualWidth
-        --------d: .....
+        --------d: partitionEqualDepth
         --------e: removeMissingInstance
         --------f: insertMissingInstance
         -----setOfAttr: ex: {id, name, age}""")
