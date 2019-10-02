@@ -1,7 +1,7 @@
 import csv
 import sys
 
-x = open("./data/weather.csv", encoding='utf-8-sig')
+x = open("./data/credit.csv", encoding='utf-8-sig')
 countries = []
 data = list(x)
 listAttr = data[0].lstrip().rstrip().split(",")
@@ -22,10 +22,10 @@ def normalizeValue(min, max, value):
 # Task a:
 
 
-def minMaxNormalization(*list):
-    for i in range(0, len(list)):
-        if list[i] in listAttr:
-            attr = list[i]
+def minMaxNormalization(*Attrlist):
+    for i in range(0, len(Attrlist)):
+        if Attrlist[i] in listAttr:
+            attr = Attrlist[i]
             listData = []
             Min = Max = 0
             for i in range(0, len(dataDict)):
@@ -36,14 +36,15 @@ def minMaxNormalization(*list):
             Min = listData[0]
             Max = listData[len(listData)-1]
             for i in range(0, len(dataDict)):
-                value = float(dataDict[i].get(attr))
-                normalizedvalue = normalizeValue(Min, Max, value)
-                dataDict[i][attr] = normalizedvalue
+                if dataDict[i].get(attr)
+                    value = float(dataDict[i].get(attr))
+                    normalizedvalue = normalizeValue(Min, Max, value)
+                    dataDict[i][attr] = normalizedvalue
         else:
-            print(f'Attribute {list[i]} is not exist.')
+            print(f'Attribute {Attrlist[i]} is not exist.')
 
 
-minMaxNormalization('temperature', 'humidity')
+minMaxNormalization('duration')
 
 
 try:
@@ -54,5 +55,3 @@ try:
             writer.writerow(dataDict[i])
 except IOError:
     print("I/O error")
-
-print('done')

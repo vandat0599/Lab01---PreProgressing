@@ -14,12 +14,11 @@ for i in range(1, len(data)):
     dataDict.append(item)
 
 
-def partitionEqualWidth(*list):
-    for i in range(0, len(list)):
-        if list[i] in listAttr:
-            attr = list[i]
+def partitionEqualWidth(n, *attrList):
+    for i in range(0, len(attrList)):
+        if attrList[i] in listAttr:
+            attr = attrList[i]
             listData = []
-            n = 5
             for i in range(0, len(dataDict)):
                 value = dataDict[i].get(attr)
                 if value:
@@ -31,16 +30,17 @@ def partitionEqualWidth(*list):
             for i in range(0, n + 1):
                 bins = bins + [int(Min + width * i)]
             for i in range(0, len(dataDict)):
-                value = float(dataDict[i].get(attr))
-                for j in range(0, n):
-                    if bins[j] <= value <= bins[j+1]:
-                        dataDict[i][attr] = '[' + \
-                            str(bins[j])+','+str(bins[j+1])+']'
+                if float(dataDict[i].get(attr)):
+                    value = float(dataDict[i].get(attr))
+                    for j in range(0, n):
+                        if bins[j] <= value <= bins[j+1]:
+                            dataDict[i][attr] = '[' + \
+                                str(bins[j])+','+str(bins[j+1])+']'
         else:
-            print(f'Attribute {list[i]} is not exist.')
+            print(f'Attribute {attrList[i]} is not exist.')
 
 
-partitionEqualWidth('temperature', 'humidity')
+partitionEqualWidth(10, 'temperature')
 print(dataDict)
 
 try:
@@ -51,3 +51,5 @@ try:
             writer.writerow(dataDict[i])
 except IOError:
     print("I/O error")
+
+print('done')
