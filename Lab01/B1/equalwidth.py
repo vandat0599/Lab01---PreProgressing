@@ -1,5 +1,7 @@
 import csv
 import sys
+import math
+
 
 x = open("./data/weather.csv", encoding='utf-8-sig')
 countries = []
@@ -26,9 +28,10 @@ def partitionEqualWidth(n, *attrList):
             Min = min(listData)
             Max = max(listData)
             bins = []
-            width = (Max-Min) / n
+            width = math.ceil((Max-Min) / n)
             for i in range(0, n + 1):
-                bins = bins + [int(Min + width * i)]
+                bins = bins + [int((Min + width * i))]
+            print(bins)
             for i in range(0, len(dataDict)):
                 if float(dataDict[i].get(attr)):
                     value = float(dataDict[i].get(attr))
@@ -41,7 +44,7 @@ def partitionEqualWidth(n, *attrList):
 
 
 partitionEqualWidth(10, 'temperature')
-print(dataDict)
+# print(dataDict)
 
 try:
     with open("./data/output1.csv", 'w') as csvfile:
